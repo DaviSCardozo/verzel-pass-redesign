@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import { Pool, type QueryResult, type QueryResultRow } from 'pg'
-import { env } from '../config/env.js'
+import { env, isProduction } from '../config/env.js'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -23,6 +23,7 @@ export default fp(
   async (app) => {
     const pool = new Pool({
       connectionString: env.DATABASE_URL,
+      ssl: isProduction ? { rejectUnauthorized: false } : undefined,
       max: 10,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 5_000,
