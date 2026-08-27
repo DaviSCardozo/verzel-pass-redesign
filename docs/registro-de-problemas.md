@@ -176,3 +176,35 @@ precisa desses atributos batendo para remover o cookie corretamente.
 ---
 
 <!-- Próximos itens vão sendo adicionados aqui conforme aparecem -->
+
+---
+
+## 10. Erro de prerender do Next.js App Router em `/login` (`useSearchParams()` sem `<Suspense>`)
+
+**Quando:** Dia 7 (27/08), durante compilação do build de produção do Front-end (`npm run build`).
+
+**O que aconteceu:** O build do Next.js falhou com a mensagem `⨯ useSearchParams() should be wrapped in a suspense boundary at page "/login"`. No Next.js App Router, o uso de `useSearchParams()` em páginas client-side causa um *CSR bailout* no prerender estático, exigindo obrigatoriamente um limite de suspense.
+
+**Decisão:** Refatorar a página `web/app/login/page.tsx`, isolando o formulário no componente `LoginFormContent` e envolvendo-o dentro de um `<Suspense fallback={...}>`, garantindo compilação estática perfeita.
+
+---
+
+## 11. Erro de Rules of Hooks do React em páginas protegidas por perfil
+
+**Quando:** Dia 7 (27/08), durante navegação e reservas em `create-event`, `validation` e `event/[id]`.
+
+**O que aconteceu:** A aplicação disparou o erro `React has detected a change in the order of Hooks` no navegador. A causa foi a chamada de `useState` e `useEffect` posicionada **após** cláusulas de guarda e retornos precoces (`if (!currentUser || role !== ...) return ...`). No React, chamadas a Hooks não podem ser condicionais nem situadas após retornos precoces.
+
+**Decisão:** Mover todas as declarações de `useState` e `useEffect` para o topo dos componentes `CreateEventPage`, `DoormanValidationPage` e `EventReservationPage`, garantindo a mesma ordem de execução em todas as renderizações.
+
+---
+
+## 12. Controle de acesso por papéis (RBAC) e persistência anti-sobreposição de assentos
+
+**Quando:** Dia 7 (27/08), durante auditoria de segurança e validação do fluxo de cliente.
+
+**O que aconteceu:** A Navbar continha um menu suspenso de troca de perfil em 1-clique sem senha, permitindo que clientes acessassem painéis de portaria ou organizador. Além disso, no mapa de cinema (`SeatMap`), assentos comprados por um cliente permaneciam disponíveis para seleção por outros clientes.
+
+**Decisão:**
+1. Remover completamente os menus de troca rápida de perfil da Navbar, exigindo login legítimo em `/login` para alteração de sessão.
+2. Implementar trava visual e persistência de assentos por evento (`verzel_booked_seats_${eventId}` em `localStorage`), marcando assentos já adquiridos como **Ocupado (Dark 'X')** e desabilitando seleção por clientes posteriores.

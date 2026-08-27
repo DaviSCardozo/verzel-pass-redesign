@@ -1,215 +1,100 @@
-# Elite Events Platform
+# 🎫 Verzel Pass — Visual Redesign & UI/UX Exploration
 
-Desafio Técnico — Elite Dev 2026
-Plataforma Full Stack de Eventos e Ingressos
+> **Exercício de Design System e Reimaginação da Experiência de Reserva de Ingressos**
 
-## Sobre o projeto
+---
 
-Plataforma onde um **Organizador** publica eventos a partir de um catálogo de
-filmes (integração com a TMDb), o **Cliente** navega pelos eventos, reserva
-ingressos, paga de forma simulada e recebe um ingresso com QR code que pode
-compartilhar por link, e a **Portaria** valida o ingresso na entrada — por
-leitura de câmera ou digitação manual — com retorno claro em 4 estados
-(válido, já utilizado, inválido, evento errado).
+## 📌 Disclaimer & Transparência Técnica
 
-## Stack utilizada
+Este projeto é uma **reimaginação visual e funcional de front-end** baseada na plataforma original [Elite Events Platform](https://github.com/DaviSCardozo/elite-events-platform), desenvolvida como um exercício prático de **UI/UX, micro-interações e Design System moderno**.
 
-- **Back-end:** Node.js + Fastify + Prisma (fixado na v6, ver seção de
-  decisões técnicas) + PostgreSQL
-- **Front-end:** Next.js 15 (App Router) + Tailwind CSS + Shadcn UI
-- **Autenticação:** JWT via cookie httpOnly, com RBAC simples (sem CASL)
-- **Infra local:** Docker Compose (apenas o banco PostgreSQL)
-- **Leitura de QR:** `html5-qrcode` (câmera) + `qrcode.react` (geração)
+### ⚠️ Diferenças entre este Redesign e a Versão Original:
 
-## Como rodar o projeto localmente
+1. **Mapa de Assentos (Simulação Visual):**
+   - O mapa de assentos interativo simula a seleção física e a ocupação visual utilizando `localStorage`.
+   - **Nota sobre Concorrência:** O backend original aceita reservas por **quantidade total de ingressos** por evento. Portanto, a seleção de assentos numéricos específicos é uma camada visual cosmética no front-end para enriquecer a experiência do usuário.
+
+2. **Integração Real com o Backend de Produção:**
+   - As ações de compra e reserva persistem dados reais invocando o endpoint `/orders` por **quantidade**.
+   - As regras de negócio críticas (estoque total de ingressos do evento, autenticação JWT via HTTP-only cookies, geração de vouchers digitais e validação de QR Code na portaria) mantêm-se **100% reais, seguras e validadas pelo servidor**.
+
+3. **Repositório do Desafio Técnico Original:**
+   - Para consultar a entrega original com histórico de testes de carga/concorrência no backend, documentação completa de decisão técnica e Docker Compose, acesse: [github.com/DaviSCardozo/elite-events-platform](https://github.com/DaviSCardozo/elite-events-platform).
+
+---
+
+## ✨ Destaques do Redesign Visual
+
+- **🎨 Design System & Estética Premium:** Tema escuro refinado com transparências (glassmorphism), gradientes vibrantes e tipografia moderna.
+- **💺 Mapa Interativo de Assentos:** Interface tátil e responsiva para escolha de lugares com indicação visual de assentos disponíveis, selecionados e ocupados.
+- **🎫 Voucher Digital Dinâmico:** Apresentação elegante do ingresso com QR Code gerado em tempo real, status dinâmico e opção de compartilhamento.
+- **📱 Scanner de Portaria Integrado:** Leitor de QR Code acionado por câmera (ou digitação manual) com feedback imediato em 4 estados (Válido, Já Utilizado, Inválido e Evento Incorreto).
+- **⚡ Alta Performance e Responsividade:** Desenvolvido com Next.js 15 (App Router) e animações suaves para telas desktop e mobile.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Front-end:** Next.js 15 (App Router), React 19, Tailwind CSS, Lucide React
+- **QR Code & Mídia:** `html5-qrcode` (leitura via câmera), `qrcode.react` (geração de QR code)
+- **Integração Backend:** Fastify, Prisma 6, PostgreSQL (através do serviço da API original)
+
+---
+
+## 🚀 Como Rodar Localmente
 
 ### Pré-requisitos
-
 - Node.js 20+
-- Docker (para o banco de dados)
+- Instância do backend [Elite Events Platform API](https://github.com/DaviSCardozo/elite-events-platform) rodando (localmente ou em nuvem).
 
 ### 1. Clonar o repositório
-
 ```bash
-git clone https://github.com/DaviSCardozo/elite-events-platform.git
-cd elite-events-platform
+git clone https://github.com/DaviSCardozo/verzel-pass-redesign.git
+cd verzel-pass-redesign
 ```
 
-### 2. Subir o banco de dados
-
-Na raiz do projeto:
-
-```bash
-docker-compose up -d
-```
-
-Isso sobe um PostgreSQL local. O Docker Compose neste projeto cobre **apenas
-o banco de dados** — a API e o front rodam diretamente com `npm run dev`
-(decisão de simplicidade, ver seção de decisões técnicas).
-
-### 3. Configurar e rodar a API
-
-```bash
-cd api
-npm install
-```
-
-Crie um arquivo `.env` na pasta `api/` com base no `.env.example`, ajustando
-se necessário (os valores padrão já funcionam com o `docker-compose.yml`
-deste repositório):
-
-```
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/eventos_db
-JWT_SECRET=uma-chave-secreta-de-sua-escolha
-CORS_ORIGIN=http://localhost:3000
-TMDB_API_KEY=sua-chave-da-tmdb
-```
-
-A `TMDB_API_KEY` é obrigatória (a API não sobe sem ela) — gere uma
-gratuitamente em [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api),
-usando a "API Key (v3 auth)".
-
-Rode as migrations e o seed:
-
-```bash
-npx prisma migrate dev
-npx prisma db seed
-```
-
-Suba a API:
-
-```bash
-npm run dev
-```
-
-A API sobe em `http://localhost:3334`.
-
-### 4. Configurar e rodar o front-end
-
-Em outro terminal, na raiz do projeto:
-
+### 2. Configurar o Front-end
 ```bash
 cd web
 npm install
 ```
 
-Crie um arquivo `.env.local` na pasta `web/`:
-
-```
+Crie o arquivo `.env.local` na pasta `web/`:
+```env
 NEXT_PUBLIC_API_URL=http://localhost:3334/api/v1
 ```
 
-Suba o front:
-
+### 3. Executar o servidor de desenvolvimento
 ```bash
 npm run dev
 ```
+Acesse a aplicação em `http://localhost:3000`.
 
-O front sobe em `http://localhost:3000`.
+---
 
-## Dados de teste (seed)
+## 🌐 Deploy na Vercel
 
-Todos os usuários semeados usam a mesma senha, de propósito, para facilitar
-os testes de quem for avaliar o projeto:
+Este projeto está pronto para deploy independente em plataformas como a **Vercel**:
 
-| Papel | E-mail | Senha |
-|---|---|---|
-| Organizador | organizador@eventos.com | 123456 |
-| Cliente 1 | cliente1@eventos.com | 123456 |
-| Cliente 2 | cliente2@eventos.com | 123456 |
-| Portaria | portaria@eventos.com | 123456 |
+1. Importe o repositório `DaviSCardozo/verzel-pass-redesign` na Vercel.
+2. Defina o **Root Directory** como `web`.
+3. Configure a variável de ambiente:
+   - `NEXT_PUBLIC_API_URL`: URL da sua API implantada (ex: `https://sua-api.render.com/api/v1`).
+4. Clique em **Deploy**.
 
-Um evento ("Vingadores: Ultimato — Sessão Especial") já vem publicado com
-50 ingressos disponíveis.
+---
 
-## Decisões técnicas
+## 📤 Atualização do Remote Git
 
-Escopo e arquitetura foram deliberadamente simplificados para o prazo de 7
-dias, priorizando um fluxo completo e testado sobre features parciais.
+Para vincular e enviar as alterações para este repositório dedicado:
 
-| Decisão | Escolhido | Descartado | Motivo |
-|---|---|---|---|
-| Monorepo | Pastas simples `api/` e `web/` | TurboRepo | Sem necessidade de build pipeline/cache compartilhado para 2 apps |
-| Permissões | Middleware de role simples (`app.authorize([...papeis])`) | CASL | 3 papéis fixos, sem regras condicionais — CASL resolveria um problema que não existe aqui |
-| Reserva | Quantidade de ingressos (modelo pista) | Mapa de assentos interativo | Edital permite qualquer um dos dois; quantidade reduz complexidade de UI sem abrir mão do requisito de concorrência |
-| Reserva + Pagamento | Ação atômica única (reserva já entra com decisão de pagamento) | Reserva temporária com expiração, separada do pagamento | Evita a complexidade de gerenciar reservas expiradas, mantendo a mesma garantia contra venda duplicada |
-| Lock de concorrência | `SELECT ... FOR UPDATE` dentro de `prisma.$transaction` | Isolamento Serializable com retry | Mais simples de raciocinar e explicar: trava a linha do evento, concorrentes esperam a vez, sem necessidade de lógica de nova tentativa |
-| Estoque de ingressos | Derivado contando `Ticket`s reais | Contador solto no `Event` | Elimina risco de o número ficar dessincronizado da realidade |
-| QR code | Código único (UUID aleatório) do ingresso, mesmo valor usado na digitação manual | Payload JWT completo no QR de validação | UUID v4 já é praticamente não adivinhável; simplifica a paridade entre leitura por câmera e digitação manual |
-| Link compartilhável | Token JWT assinado, separado do código do QR de validação | — | Previne enumeração de ingressos por terceiros ao navegar por `/ticket/:token` |
-| Prisma | Fixado na v6 | v7 (mais recente) | v7 mudou a forma de configuração (`prisma.config.ts`) de forma muito recente para o prazo do desafio — decisão de estabilidade |
-| Catálogo externo | TMDb | Ticketmaster Discovery | Escolha única, TMDb cobre o caso de uso de filmes/shows |
-| Docker Compose | Cobre apenas o banco PostgreSQL | Containerizar API e front também | Reduz complexidade de rede entre containers durante o desenvolvimento; API e front já rodam de forma simples e rápida com `npm run dev` |
+```bash
+git remote set-url origin https://github.com/DaviSCardozo/verzel-pass-redesign.git
+git add .
+git commit -m "feat: redesign visual completo verzel pass e disclaimer de arquitetura"
+git push -u origin main
+```
 
-## Engenharia de Contexto & Uso de IA
+---
 
-Este projeto foi construído inteiramente em parceria com uma IA (Claude, da
-Anthropic), atuando como tech lead e par de programação ao longo de toda a
-semana — sem uso de IDEs com IA integrada (Cursor, Antigravity, etc.). O
-fluxo de trabalho foi:
-
-1. Planejamento e priorização do escopo em conversa, incluindo cortes
-   deliberados de complexidade (CASL, TurboRepo, mapa de assentos) para
-   caber no prazo de 7 dias.
-2. Geração de cada trecho de código pela IA, revisado e colado manualmente
-   pelo desenvolvedor no editor.
-3. Teste manual estruturado de cada funcionalidade (Postman para as rotas
-   de API, navegador para o front) antes de qualquer commit — nenhuma
-   função foi considerada pronta sem esse passo.
-4. Debug conjunto de problemas reais encontrados no caminho (detalhados em
-   `docs/registro-de-problemas.md`), com a IA ajudando a diagnosticar e o
-   desenvolvedor executando e confirmando cada correção.
-5. Revisão de código antes de cada commit importante, e uma auditoria final
-   do escopo contra o edital (foi nessa auditoria que a integração real com
-   a TMDb, inicialmente esquecida, foi identificada e implementada).
-6. Como o desenvolvimento se estendeu por vários dias e sessões de
-   conversa, a continuidade de contexto entre elas foi mantida através de
-   resumos técnicos estruturados em formato de hand-off (objetivo, o que
-   foi concluído, estado atual da arquitetura, próximos passos
-   prioritários), colados no início de cada nova sessão — uma prática
-   emprestada de rotinas reais de handoff entre desenvolvedores.
-
-**O que foi decidido e validado manualmente pelo desenvolvedor, em cada
-etapa:**
-- A modelagem do schema Prisma (relações entre User, Event, Order, Ticket)
-- A lógica de lock de concorrência (`FOR UPDATE`) e sua ordem dentro da
-  transação — decisiva para a garantia de não venda duplicada
-- A separação entre código de QR (validação) e token JWT (link público)
-- Os 4 estados de validação da portaria e sua ordem de checagem
-- Todos os testes manuais de cada funcionalidade antes do commit
-
-Os arquivos `docs/PRD.md` (planejamento inicial) e
-`docs/registro-de-problemas.md` (registro de problemas reais encontrados e
-decisões tomadas ao longo do desenvolvimento) estão versionados neste
-repositório como evidência desse processo.
-
-## O que não funcionou como esperado / limitações conhecidas
-
-- O painel do organizador permite apenas **criar** eventos — edição e
-  cancelamento com devolução ao estoque (itens opcionais do edital) não
-  foram implementados por priorização de tempo.
-- Não há um link de navegação visível para `/organizador/novo-evento` ou
-  `/portaria` a partir da Home — essas rotas existem e funcionam, mas
-  precisam ser acessadas diretamente pela URL.
-- Testes automatizados (Vitest) não foram escritos; a cobertura de qualidade
-  vem de testes manuais estruturados, documentados durante o desenvolvimento.
-- O lock de concorrência (`FOR UPDATE`) foi validado funcionalmente em todos
-  os caminhos possíveis (aprovação, recusa, estoque insuficiente), mas não
-  sob um teste de carga com requisições verdadeiramente simultâneas.
-
-## Link do deploy
-
-- **Front (Vercel):** https://elite-events-platform.vercel.app
-- **Back (Render):** https://elite-events-api.onrender.com
-
-**Nota sobre cold start:** o backend está no plano gratuito da Render, que
-"hiberna" o serviço após alguns minutos de inatividade. A primeira
-requisição depois de um período parado pode levar de 30 a 60 segundos para
-responder (o serviço "acordando") — isso é comportamento esperado do plano
-gratuito, não é bug da aplicação.
-
-**Nota sobre navegação anônima:** alguns navegadores (Chrome, por padrão)
-bloqueiam cookies de terceiros em janelas anônimas/privadas, o que pode
-impedir o login de persistir corretamente já que o front (Vercel) e o back
-(Render) estão em domínios diferentes. Recomenda-se testar em uma janela
-normal do navegador.
+*Projeto desenvolvido por Davi S. Cardozo como exploração de UI/UX e arquitetura front-end.*

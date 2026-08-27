@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import { UserProvider } from "@/lib/user-context";
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,17 +15,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Elite Events Platform",
-  description: "Plataforma de eventos e ingressos com QR code",
+  title: "Verzel Pass - Cyber Ticketing Platform",
+  description: "Plataforma de bilhetagem e eventos com scanner em tempo real",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="pt-BR"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#070a10] text-slate-100">
+        <UserProvider>
+          <Navbar />
+          <div className="flex-1">{children}</div>
+        </UserProvider>
+      </body>
     </html>
   );
 }
