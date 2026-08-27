@@ -29,10 +29,10 @@ export const env = parsed.data
 
 export const isProduction = env.NODE_ENV === 'production'
 
-/** `*` libera tudo; caso contrário, lista de origens separadas por vírgula. */
-export const corsOrigin: string | string[] =
+/** `*` libera tudo (retorna true para suportar credentials: true); caso contrário, lista de origens. */
+export const corsOrigin: boolean | string | string[] =
   env.CORS_ORIGIN === '*'
-    ? '*'
+    ? true
     : env.CORS_ORIGIN.split(',')
         .map((origin) => origin.trim())
         .filter(Boolean)
