@@ -4,6 +4,22 @@
 
 ---
 
+## 🔗 Links do Projeto & Demonstração
+
+- **🌐 Live Demo (Front-end):** [Acessar a Aplicação na Vercel](https://verzel-pass-redesign.vercel.app) *(substitua pela sua URL da Vercel se for diferente)*
+- **⚡ API em Produção:** `https://verzel-pass-api.onrender.com/api/v1`
+- **📦 Repositório do Desafio Original:** [github.com/DaviSCardozo/elite-events-platform](https://github.com/DaviSCardozo/elite-events-platform)
+
+### 🧪 Contas de Teste Pré-Cadastradas (Senha Padrão: `123456`)
+
+| Papel / Perfil | E-mail de Acesso | Senha | Funcionalidade Principal |
+| :--- | :--- | :--- | :--- |
+| **👑 Organizador** | `organizador@eventos.com` | `123456` | Criar novos eventos, ver estatísticas |
+| **🎟️ Cliente** | `cliente1@eventos.com` | `123456` | Escolher assentos, comprar ingressos, ver vouchers |
+| **🚪 Portaria** | `portaria@eventos.com` | `123456` | Validar QR Codes de ingressos via câmera |
+
+---
+
 ## 📌 Disclaimer & Transparência Técnica
 
 Este projeto é uma **reimaginação visual e funcional de front-end** desenvolvida após a entrega do desafio técnico original [Elite Events Platform](https://github.com/DaviSCardozo/elite-events-platform). O objetivo desta versão é servir como **exercício avançado de UI/UX, micro-interações, mapas interativos e Design System moderno**.
