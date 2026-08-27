@@ -1,35 +1,47 @@
 # 🎫 Verzel Pass — Visual Redesign & UI/UX Exploration
 
-> **Exercício de Design System e Reimaginação da Experiência de Reserva de Ingressos**
+> **Exercício de Design System, Reimaginação de UI/UX e Arquitetura Full Stack de Ingressos**
 
 ---
 
 ## 📌 Disclaimer & Transparência Técnica
 
-Este projeto é uma **reimaginação visual e funcional de front-end** baseada na plataforma original [Elite Events Platform](https://github.com/DaviSCardozo/elite-events-platform), desenvolvida como um exercício prático de **UI/UX, micro-interações e Design System moderno**.
+Este projeto é uma **reimaginação visual e funcional de front-end** desenvolvida após a entrega do desafio técnico original [Elite Events Platform](https://github.com/DaviSCardozo/elite-events-platform). O objetivo desta versão é servir como **exercício avançado de UI/UX, micro-interações, mapas interativos e Design System moderno**.
 
-### ⚠️ Diferenças entre este Redesign e a Versão Original:
+### ⚠️ Diferenças de Arquitetura em Relação ao Repositório Original:
 
-1. **Mapa de Assentos (Simulação Visual):**
-   - O mapa de assentos interativo simula a seleção física e a ocupação visual utilizando `localStorage`.
-   - **Nota sobre Concorrência:** O backend original aceita reservas por **quantidade total de ingressos** por evento. Portanto, a seleção de assentos numéricos específicos é uma camada visual cosmética no front-end para enriquecer a experiência do usuário.
+1. **Mapa de Assentos (Simulação Visual Front-end):**
+   - O mapa de assentos interativo simula a escolha e ocupação física de cadeiras utilizando `localStorage`.
+   - **Nota sobre Concorrência:** O backend da aplicação gerencia a disponibilidade real por **quantidade total de ingressos por evento**. Portanto, a escolha de assentos numéricos (ex: A-12, C-05) é uma camada cosmética no front-end para enriquecer a experiência do usuário.
 
-2. **Integração Real com o Backend de Produção:**
-   - As ações de compra e reserva persistem dados reais invocando o endpoint `/orders` por **quantidade**.
-   - As regras de negócio críticas (estoque total de ingressos do evento, autenticação JWT via HTTP-only cookies, geração de vouchers digitais e validação de QR Code na portaria) mantêm-se **100% reais, seguras e validadas pelo servidor**.
+2. **Integração Segura com a API de Produção:**
+   - Ao finalizar a compra, o front-end consome o endpoint original `/orders` enviando a **quantidade total de ingressos selecionados**.
+   - Todas as garantias técnicas essenciais (estoque real do evento no banco de dados, autenticação JWT via HTTP-only cookies, validação de permissões RBAC, geração de vouchers digitais com QR Code e validação na portaria) mantêm-se **100% ativas e validadas pelo servidor**.
 
 3. **Repositório do Desafio Técnico Original:**
-   - Para consultar a entrega original com histórico de testes de carga/concorrência no backend, documentação completa de decisão técnica e Docker Compose, acesse: [github.com/DaviSCardozo/elite-events-platform](https://github.com/DaviSCardozo/elite-events-platform).
+   - Para analisar o repositório com o histórico de commits da entrega técnica do desafio, testes de concorrência/carga no backend, decisões de persistência com Prisma 6 e Docker Compose, acesse: [github.com/DaviSCardozo/elite-events-platform](https://github.com/DaviSCardozo/elite-events-platform).
+
+---
+
+## 🏗️ Arquitetura de Deploy em Produção
+
+A aplicação foi implantada em infraestrutura distribuída na nuvem:
+
+| Camada | Serviço / Provedor | URL / Descrição |
+| :--- | :--- | :--- |
+| **Front-end** | **Vercel** | Aplicação Next.js 15 (App Router) com Tailwind CSS |
+| **Back-end API** | **Render.com** | Node.js + Fastify + Prisma (`https://verzel-pass-api.onrender.com/api/v1`) |
+| **Banco de Dados** | **Render PostgreSQL** | Instância PostgreSQL com conexões SSL gerenciadas |
 
 ---
 
 ## ✨ Destaques do Redesign Visual
 
-- **🎨 Design System & Estética Premium:** Tema escuro refinado com transparências (glassmorphism), gradientes vibrantes e tipografia moderna.
-- **💺 Mapa Interativo de Assentos:** Interface tátil e responsiva para escolha de lugares com indicação visual de assentos disponíveis, selecionados e ocupados.
-- **🎫 Voucher Digital Dinâmico:** Apresentação elegante do ingresso com QR Code gerado em tempo real, status dinâmico e opção de compartilhamento.
-- **📱 Scanner de Portaria Integrado:** Leitor de QR Code acionado por câmera (ou digitação manual) com feedback imediato em 4 estados (Válido, Já Utilizado, Inválido e Evento Incorreto).
-- **⚡ Alta Performance e Responsividade:** Desenvolvido com Next.js 15 (App Router) e animações suaves para telas desktop e mobile.
+- **🎨 Design System & Estética Dark:** Interface com transparências glassmorphism, paleta harmônica de cores e tipografia fluida.
+- **💺 Mapa Interativo de Assentos:** Interface para escolha de lugares com indicação visual em tempo real (disponível, selecionado e ocupado).
+- **🎫 Voucher Digital Dinâmico:** Apresentação do ingresso com QR Code gerado instantaneamente, status e opção de compartilhamento por link.
+- **📱 Scanner de Portaria por Câmera:** Leitor de QR Code integrado via câmera (ou digitação manual) com feedback visual imediato em 4 estados: *Válido*, *Já Utilizado*, *Inválido* e *Evento Incorreto*.
+- **⚡ Alta Performance:** Desenvolvido com Next.js 15 (App Router), React 19 e Tailwind CSS.
 
 ---
 
@@ -37,7 +49,8 @@ Este projeto é uma **reimaginação visual e funcional de front-end** baseada n
 
 - **Front-end:** Next.js 15 (App Router), React 19, Tailwind CSS, Lucide React
 - **QR Code & Mídia:** `html5-qrcode` (leitura via câmera), `qrcode.react` (geração de QR code)
-- **Integração Backend:** Fastify, Prisma 6, PostgreSQL (através do serviço da API original)
+- **Back-end:** Node.js 20, Fastify 5, Prisma 6, PostgreSQL, JWT (HTTP-only cookies), Zod
+- **Infraestrutura:** Vercel (Front-end), Render (API + PostgreSQL)
 
 ---
 
@@ -45,7 +58,7 @@ Este projeto é uma **reimaginação visual e funcional de front-end** baseada n
 
 ### Pré-requisitos
 - Node.js 20+
-- Instância do backend [Elite Events Platform API](https://github.com/DaviSCardozo/elite-events-platform) rodando (localmente ou em nuvem).
+- Docker (opcional, para rodar o PostgreSQL localmente)
 
 ### 1. Clonar o repositório
 ```bash
@@ -53,18 +66,37 @@ git clone https://github.com/DaviSCardozo/verzel-pass-redesign.git
 cd verzel-pass-redesign
 ```
 
-### 2. Configurar o Front-end
+### 2. Configurar e Executar a API (Back-end)
+```bash
+cd api
+npm install
+```
+Crie um arquivo `.env` na pasta `api/`:
+```env
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/eventos_db
+JWT_SECRET=sua-chave-secreta-local-2026
+CORS_ORIGIN=http://localhost:3000
+TMDB_API_KEY=sua-chave-tmdb
+```
+Execute as migrations, o seed e inicie a API:
+```bash
+npx prisma migrate dev
+npx prisma db seed
+npm run dev
+```
+A API rodará em `http://localhost:3334`.
+
+### 3. Configurar e Executar o Front-end
+Em outro terminal:
 ```bash
 cd web
 npm install
 ```
-
-Crie o arquivo `.env.local` na pasta `web/`:
+Crie um arquivo `.env.local` na pasta `web/`:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3334/api/v1
 ```
-
-### 3. Executar o servidor de desenvolvimento
+Inicie o servidor de desenvolvimento:
 ```bash
 npm run dev
 ```
@@ -72,29 +104,18 @@ Acesse a aplicação em `http://localhost:3000`.
 
 ---
 
-## 🌐 Deploy na Vercel
+## 🌐 Configuração de Variáveis de Ambiente no Deploy (Vercel & Render)
 
-Este projeto está pronto para deploy independente em plataformas como a **Vercel**:
+### Front-end (Vercel)
+- `NEXT_PUBLIC_API_URL` = `https://verzel-pass-api.onrender.com/api/v1` *(Tipo: Config)*
 
-1. Importe o repositório `DaviSCardozo/verzel-pass-redesign` na Vercel.
-2. Defina o **Root Directory** como `web`.
-3. Configure a variável de ambiente:
-   - `NEXT_PUBLIC_API_URL`: URL da sua API implantada (ex: `https://sua-api.render.com/api/v1`).
-4. Clique em **Deploy**.
-
----
-
-## 📤 Atualização do Remote Git
-
-Para vincular e enviar as alterações para este repositório dedicado:
-
-```bash
-git remote set-url origin https://github.com/DaviSCardozo/verzel-pass-redesign.git
-git add .
-git commit -m "feat: redesign visual completo verzel pass e disclaimer de arquitetura"
-git push -u origin main
-```
+### Back-end (Render Web Service)
+- `DATABASE_URL` = `postgresql://<user>:<password>@<host>.render.com/<database>`
+- `JWT_SECRET` = `<sua-chave-secreta-jwt>`
+- `TMDB_API_KEY` = `<sua-chave-tmdb>`
+- `CORS_ORIGIN` = `*`
+- `NODE_ENV` = `production`
 
 ---
 
-*Projeto desenvolvido por Davi S. Cardozo como exploração de UI/UX e arquitetura front-end.*
+*Projeto desenvolvido por Davi S. Cardozo como exploração de UI/UX e arquitetura de software full stack.*
