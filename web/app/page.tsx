@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Calendar, MapPin, Ticket, Sparkles, Shield, Film, ArrowRight, Armchair } from 'lucide-react'
+import PublishEventButton from '@/components/PublishEventButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -114,12 +115,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <Link
-            href="/create-event"
-            className="px-4 py-2 bg-lime-500/10 hover:bg-lime-500/20 border border-lime-500/30 text-lime-400 font-semibold text-xs rounded-xl transition-all flex items-center gap-1.5"
-          >
-            + Publicar Evento
-          </Link>
+          <PublishEventButton />
         </div>
 
         {events.length === 0 ? (

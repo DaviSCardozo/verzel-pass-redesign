@@ -14,39 +14,53 @@ export interface PresetUser {
   email: string
   role: 'ORGANIZER' | 'CUSTOMER' | 'DOORMAN'
   label: string
+  // Senha NUNCA embarcada em produção — lida da variável de ambiente
+  // NEXT_PUBLIC_PRESET_PASSWORD (só disponível em .env.local, não commitada).
   password: string
 }
 
-export const PRESET_USERS: PresetUser[] = [
-  {
-    name: 'Carlos Cliente',
-    email: 'cliente1@eventos.com',
-    role: 'CUSTOMER',
-    label: 'Cliente 1 (Carlos)',
-    password: '123456',
-  },
-  {
-    name: 'Bia Cliente',
-    email: 'cliente2@eventos.com',
-    role: 'CUSTOMER',
-    label: 'Cliente 2 (Bia)',
-    password: '123456',
-  },
-  {
-    name: 'Ana Organizadora',
-    email: 'organizador@eventos.com',
-    role: 'ORGANIZER',
-    label: 'Organizador (Ana)',
-    password: '123456',
-  },
-  {
-    name: 'Pedro Portaria',
-    email: 'portaria@eventos.com',
-    role: 'DOORMAN',
-    label: 'Portaria (Pedro)',
-    password: '123456',
-  },
-]
+/**
+ * Contas de demonstração disponíveis SOMENTE em desenvolvimento.
+ * Em produção este array é vazio, portanto nenhuma senha compila para o bundle.
+ *
+ * Para habilitar o quick-login em dev, crie web/.env.local com:
+ *   NEXT_PUBLIC_PRESET_PASSWORD=<senha-das-contas-seed>
+ */
+const _PRESET_PASSWORD = process.env.NEXT_PUBLIC_PRESET_PASSWORD ?? ''
+
+export const PRESET_USERS: PresetUser[] =
+  process.env.NODE_ENV === 'development' && _PRESET_PASSWORD
+    ? [
+        {
+          name: 'Carlos Cliente',
+          email: 'cliente1@eventos.com',
+          role: 'CUSTOMER',
+          label: 'Cliente 1 (Carlos)',
+          password: _PRESET_PASSWORD,
+        },
+        {
+          name: 'Bia Cliente',
+          email: 'cliente2@eventos.com',
+          role: 'CUSTOMER',
+          label: 'Cliente 2 (Bia)',
+          password: _PRESET_PASSWORD,
+        },
+        {
+          name: 'Ana Organizadora',
+          email: 'organizador@eventos.com',
+          role: 'ORGANIZER',
+          label: 'Organizador (Ana)',
+          password: _PRESET_PASSWORD,
+        },
+        {
+          name: 'Pedro Portaria',
+          email: 'portaria@eventos.com',
+          role: 'DOORMAN',
+          label: 'Portaria (Pedro)',
+          password: _PRESET_PASSWORD,
+        },
+      ]
+    : []
 
 interface UserContextType {
   currentUser: UserSession | null
