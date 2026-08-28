@@ -65,9 +65,9 @@ export const PRESET_USERS: PresetUser[] =
 interface UserContextType {
   currentUser: UserSession | null
   isLoading: boolean
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>
+  login: (email: string, password: string) => Promise<{ success: boolean; message?: string; user?: UserSession }>
   logout: () => Promise<void>
-  loginAsPreset: (email: string) => Promise<{ success: boolean; message?: string }>
+  loginAsPreset: (email: string) => Promise<{ success: boolean; message?: string; user?: UserSession }>
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -128,7 +128,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setCurrentUser(data.user)
       localStorage.setItem('verzel_current_user', data.user.email)
       setIsLoading(false)
-      return { success: true }
+      return { success: true, user: data.user }
     } catch (err) {
       console.error(err)
       setIsLoading(false)

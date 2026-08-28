@@ -18,6 +18,17 @@ function LoginFormContent() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  const redirectByRole = (role?: string) => {
+    if (role === 'ORGANIZER') {
+      router.push('/create-event')
+    } else if (role === 'DOORMAN') {
+      router.push('/validation')
+    } else {
+      router.push('/')
+    }
+    router.refresh()
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -25,8 +36,7 @@ function LoginFormContent() {
 
     const res = await login(email, password)
     if (res.success) {
-      router.push('/')
-      router.refresh()
+      redirectByRole(res.user?.role)
     } else {
       setError(res.message || 'Falha ao realizar login')
       setLoading(false)
@@ -38,8 +48,7 @@ function LoginFormContent() {
     setError(null)
     const res = await loginAsPreset(presetEmail)
     if (res.success) {
-      router.push('/')
-      router.refresh()
+      redirectByRole(res.user?.role)
     } else {
       setError(res.message || 'Falha ao autenticar com usuário de teste')
       setLoading(false)

@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from 'fastify'
 import { z } from 'zod'
+import { EventsService } from '../services/events.service.js'
 
 const createEventBodySchema = z.object({
   title: z.string().min(2),
@@ -13,17 +14,19 @@ const createEventBodySchema = z.object({
 })
 
 const eventRoutes: FastifyPluginAsync = async (app) => {
-  // Pública: qualquer um pode ver os eventos publicados.
+  const eventsService = new EventsService(app.prisma)
+
+  // Pública: lista todos os eventos cadastrados
   app.get('/events', async () => {
-    const events = await app.prisma.event.findMany({ orderBy: { date: 'asc' } })
+    const events = await eventsService.listEvents()
     return { data: events, total: events.length }
   })
 
-  // Pública: detalhe de um evento, com disponibilidade calculada.
+  // Pública: detalhe de um evento com cálculo de disponibilidade derivada
   app.get('/events/:id', async (request, reply) => {
     const { id } = request.params as { id: string }
 
-    const event = await app.prisma.event.findUnique({ where: { id } })
+    const event = await eventsService.getEventById(id)
 
     if (!event) {
       return reply.status(404).send({
@@ -33,13 +36,10 @@ const eventRoutes: FastifyPluginAsync = async (app) => {
       })
     }
 
-    const ticketsVendidos = await app.prisma.ticket.count({ where: { eventId: id } })
-    const disponiveis = event.capacidadeTotal - ticketsVendidos
-
-    return { event: { ...event, disponiveis } }
+    return { event }
   })
 
-  // Protegida: só ORGANIZER pode criar evento.
+  // Protegida: criação de evento restrita ao papel de ORGANIZER
   app.post(
     '/events',
     { preHandler: [app.authorize(['ORGANIZER'])] },
@@ -54,11 +54,9 @@ const eventRoutes: FastifyPluginAsync = async (app) => {
         })
       }
 
-      const event = await app.prisma.event.create({
-        data: {
-          ...parsed.data,
-          organizerId: request.user.sub,
-        },
+      const event = await eventsService.createEvent({
+        ...parsed.data,
+        organizerId: request.user.sub,
       })
 
       return reply.status(201).send({ event })
