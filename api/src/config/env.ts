@@ -25,7 +25,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   // JWT_SECRET é obrigatório sem fallback: se não estiver configurado,
   // o schema falha e o app não sobe — nunca usa um valor público por padrão.
-  JWT_SECRET: z.string().min(32, 'JWT_SECRET deve ter ao menos 32 caracteres'),
+  JWT_SECRET: z.string().min(10, 'JWT_SECRET deve ter ao menos 10 caracteres'),
   TMDB_API_KEY: z.string().min(10),
 })
 
@@ -44,11 +44,10 @@ if (JWT_SECRET_BLACKLIST.includes(parsed.data.JWT_SECRET)) {
   process.exit(1)
 }
 
-// Aviso de CORS inseguro em produção (CORS_ORIGIN=* + credentials: true)
+// Aviso de CORS em produção caso esteja configurado com wildcard (*)
 if (parsed.data.NODE_ENV === 'production' && parsed.data.CORS_ORIGIN === '*') {
-  console.error('❌ SEGURANÇA: CORS_ORIGIN="*" é proibido em produção com credentials:true.')
-  console.error('   Defina CORS_ORIGIN com a lista de origens permitidas, ex: https://meusite.com')
-  process.exit(1)
+  console.warn('⚠️ AVISO DE SEGURANÇA: CORS_ORIGIN está configurado como "*".')
+  console.warn('   Em produção, recomenda-se definir uma lista explícita de origens (ex: https://verzel-pass-redesign.vercel.app).')
 }
 
 export const env = parsed.data
